@@ -7,7 +7,7 @@ const {Todo} = require('./../models/todo');
 
 const todos = [ 
 	{_id: new ObjectID(), text: 'this is the first text'}, 
-	{_id: new ObjectID(), text: 'this is the second text'} 
+	{_id: new ObjectID(), text: 'this is the second text', completed: true, completedAt: 333} 
 	];
 
 //to remove all db recoreds before the assertion test
@@ -146,6 +146,49 @@ describe('DELETE /todos/:id', () => {
 			.delete('/todos/1234bdg')
 			.expect(404)
 			.end(done)
+	});
+
+});
+
+describe('PATCH /todos/:id', () => {
+
+	it('should update the todo', (done) => {
+		var id = todos[0]._id.toHexString();
+		var text = 'this should be the new text';
+
+		request(app)
+			.patch(`/todos/${id}`)
+			.send({
+				completed: true,
+				text
+			})
+			.expect(200)
+			.expect( (res) => {
+				expect(res.body.todo.text).toBe(text);
+				expect(res.body.todo.completed).toBe(true);
+				expect(res.body.todo.completedAt).toBeA('number');
+			})
+			.end(done)
+	});
+
+	it('should clear completedAt', (done) => {
+		var id = todos[1]._id.toHexString();
+		var text = 'this should be the new text !!!';
+
+		request(app)
+			.patch(`/todos/${id}`)
+			.send({
+				completed: false,
+				text
+			})
+			.expect(200)
+			.expect( (res) => {
+				expect(res.body.todo.text).toBe(text);
+				expect(res.body.todo.completed).toBe(false);
+				expect(res.body.todo.completedAt).toNotExist();
+			})
+			.end(done)
+
 	});
 
 });
