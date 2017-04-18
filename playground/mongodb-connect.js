@@ -1,4 +1,4 @@
-//const MongoClient = require('mongodb').MongoClient;
+//const MongoClient = require('mongodb').MongoClient;  property destructing
 const {MongoClient, ObjectID} = require('mongodb');
 
 
