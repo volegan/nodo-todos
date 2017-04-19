@@ -15,6 +15,7 @@ const port = process.env.PORT;
 app.use(bodyParser.json());
 
 
+//-------- Todo Model ------------------------------------------------------
 app.post('/todos', (req, res) => {
 	var todo = new Todo({
 		text: req.body.text
@@ -99,8 +100,43 @@ app.patch('/todos/:id', (req, res) => {
 
 });
 
+//-------- User Model ------------------------------------------------------
+app.post('/users', (req, res) => {
+	var body = _.pick(req.body, ['email', 'password']);
+	var user = new User(body);
+
+	user.save().then(() => {	
+		return user.generateAuthToken(); //return for chaning the promise
+	}).then((token) => {
+		res.header('x-auth', token).send(user.toJson());
+	}).catch( (e) => {
+		res.status(400).send(e);
+	});
+});
 
 
+// app.get('/users/:id', (req, res) => {
+// 	var id = req.params.id;
+
+// 	if (!ObjectID.isValid(id)) {
+// 		return res.status(404).send();
+// 	}
+
+// 	User.findById(id).then( (user) => {	
+// 		if (!user) {
+// 			return res.status(404).send();
+// 		}
+// 		res.send({user});
+// 	}).catch( (e) => {
+// 		res.status(400).send();
+// 	});
+// });
+
+
+
+
+
+//----------- PORT LISTNER --------------------------------------------------
 app.listen(port, () => {
 	console.log(`Stareted on port ${port}`);
 });
