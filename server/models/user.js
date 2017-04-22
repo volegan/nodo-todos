@@ -62,6 +62,18 @@ UserSchema.methods.generateAuthToken = function () {
 };
 
 
+//to remove token for logout
+UserSchema.methods.removeToken = function (token) {
+	var user = this;
+
+	return user.update({
+		$pull: {
+			tokens: { token }
+		}
+	});
+};
+
+
 //find user by token and verify the token
 UserSchema.statics.findByToken = function (token) {
 	var User = this;
