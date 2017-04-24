@@ -18,13 +18,18 @@ const user = [{
 },{
 	_id: userTwoId,
 	email: 'jan@email.com',
-	password: 'password'
+	password: 'password',
+	tokens: [{
+		access: 'auth',
+		token: jwt.sign({_id: userTwoId, access: 'auth'}, 'abc123').toString()
+
+	}] 
 }];
 
 
 const todos = [ 
-	{_id: new ObjectID(), text: 'this is the first text'}, 
-	{_id: new ObjectID(), text: 'this is the second text', completed: true, completedAt: 333} 
+	{_id: new ObjectID(), text: 'this is the first text', _creator: userOneId}, 
+	{_id: new ObjectID(), text: 'this is the second text', completed: true, completedAt: 333, _creator: userTwoId} 
 	];
 
 //to remove all db recoreds before the assertion test
